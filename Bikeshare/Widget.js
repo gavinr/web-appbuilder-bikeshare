@@ -18,6 +18,7 @@ define(["dojo/_base/declare", "jimu/BaseWidget"], function(
   BaseWidget
 ) {
   var clazz = declare([BaseWidget], {
+    baseClass: "bikeshare",
     _getMapId: function() {
       alert(this.map.id);
     }
