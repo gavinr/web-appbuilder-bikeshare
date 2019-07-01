@@ -13,5 +13,11 @@
     "hasLocale": true,
     "hasUIFile": true,
     "hasSettingPage": true
-  }
+  },
+  "featureActions": [
+    {
+      "name": "BikesNear",
+      "uri": "BikesNearAction"
+    }
+  ]
 }

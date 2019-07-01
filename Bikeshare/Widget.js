@@ -57,24 +57,32 @@ define([
       this.createSearchWidget();
     },
 
-    onOpen: async function() {
-      this.graphicsLayer = new GraphicsLayer();
-      this.map.addLayer(this.graphicsLayer);
-
-      try {
-        var resBikeStatusInfo = await this.gbfs.free_bike_status();
-
-        resBikeStatusInfo.graphics.forEach(graphic => {
-          this.graphicsLayer.add(graphic);
-        });
-      } catch (e) {
-        console.error("Error getting bike status:", e);
-      }
+    onOpen: function() {
+      this.showBikesLayer();
     },
 
     onClose: function() {
       this.map.removeLayer(this.graphicsLayer);
       this.graphicsLayer.destroy();
+    },
+
+    showBikesLayer: async function() {
+      return new Promise(async (resolve, reject) => {
+        this.graphicsLayer = new GraphicsLayer();
+        this.map.addLayer(this.graphicsLayer);
+
+        try {
+          var resBikeStatusInfo = await this.gbfs.free_bike_status();
+
+          resBikeStatusInfo.graphics.forEach(graphic => {
+            this.graphicsLayer.add(graphic);
+          });
+          resolve();
+        } catch (e) {
+          console.error("Error getting bike status:", e);
+          reject(e);
+        }
+      });
     },
 
     createSearchWidget: function() {
