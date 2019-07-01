@@ -32,13 +32,13 @@ define([
     postCreate: function() {
       this.inherited(arguments);
 
-      this.graphicsLayer = new GraphicsLayer();
-      this.map.addLayer(this.graphicsLayer);
-
       this.gbfs = new GBFS(this.config.gbfsUrl);
     },
 
     onOpen: async function() {
+      this.graphicsLayer = new GraphicsLayer();
+      this.map.addLayer(this.graphicsLayer);
+
       try {
         var resBikeStatusInfo = await this.gbfs.free_bike_status();
 
@@ -48,6 +48,11 @@ define([
       } catch (e) {
         console.error("Error getting bike status:", e);
       }
+    },
+
+    onClose: function() {
+      this.map.removeLayer(this.graphicsLayer);
+      this.graphicsLayer.destroy();
     }
   });
   return clazz;
