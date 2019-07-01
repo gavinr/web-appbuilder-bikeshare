@@ -17,8 +17,29 @@ define([
   "dojo/_base/declare",
   "jimu/BaseWidget",
   "./GBFS",
-  "esri/layers/GraphicsLayer"
-], function(declare, BaseWidget, GBFS, GraphicsLayer) {
+
+  "esri/layers/GraphicsLayer",
+  "esri/SpatialReference",
+  "dojo/on",
+  "esri/dijit/Search",
+  "esri/geometry/Multipoint",
+  "esri/geometry/geometryEngine",
+  "esri/geometry/webMercatorUtils",
+  "esri/graphic"
+], function(
+  declare,
+  BaseWidget,
+  GBFS,
+
+  GraphicsLayer,
+  SpatialReference,
+  on,
+  Search,
+  Multipoint,
+  geometryEngine,
+  webMercatorUtils,
+  Graphic
+) {
   var clazz = declare([BaseWidget], {
     baseClass: "bikeshare",
 
@@ -33,6 +54,7 @@ define([
       this.inherited(arguments);
 
       this.gbfs = new GBFS(this.config.gbfsUrl);
+      this.createSearchWidget();
     },
 
     onOpen: async function() {
@@ -53,6 +75,43 @@ define([
     onClose: function() {
       this.map.removeLayer(this.graphicsLayer);
       this.graphicsLayer.destroy();
+    },
+
+    createSearchWidget: function() {
+      // Create a new "Search" widget (https://developers.arcgis.com/javascript/3/jsapi/search-amd.html) inside our
+      // widget.
+      this.search = new Search(
+        {
+          map: this.map,
+          autoNavigate: false
+        },
+        this.searchWidgetWrapper
+      );
+      this.search.startup();
+
+      // Setup an event listener so when a search is completed, we'll take that point location and do a Yelp search
+      // with it:
+      on(this.search, "select-result", evt => {
+        this.showClosest(evt.result.feature.geometry);
+      });
+    },
+
+    showClosest: function(point) {
+      var multiPoint = new Multipoint(new SpatialReference(4326));
+      this.graphicsLayer.graphics.forEach(graphic => {
+        multiPoint.addPoint(graphic.geometry);
+      });
+
+      var closestPointInfo = geometryEngine.nearestCoordinate(
+        multiPoint,
+        webMercatorUtils.webMercatorToGeographic(point)
+      );
+
+      this.map.graphics.clear();
+      this.map.graphics.add(
+        new Graphic(closestPointInfo.coordinate, this.gbfs.highlightSymbol)
+      );
+      this.map.centerAndZoom(closestPointInfo.coordinate, 14);
     }
   });
   return clazz;

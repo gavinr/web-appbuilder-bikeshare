@@ -38,6 +38,13 @@ define([
       } else {
         console.error("Error getting root url.");
       }
+
+      this.standardSymbol = new SimpleMarkerSymbol()
+        .setStyle(SimpleMarkerSymbol.STYLE_CIRCLE)
+        .setColor(new Color([255, 0, 0, 0.5]));
+      this.highlightSymbol = new SimpleMarkerSymbol()
+        .setStyle(SimpleMarkerSymbol.STYLE_SQUARE)
+        .setColor(new Color([0, 255, 0, 0.5]));
     },
 
     /**
@@ -48,12 +55,7 @@ define([
      */
     free_bike_status(symbol) {
       // set symbol if one is not passed in:
-      symbol =
-        typeof symbol !== "undefined"
-          ? symbol
-          : new SimpleMarkerSymbol()
-              .setStyle(SimpleMarkerSymbol.STYLE_CIRCLE)
-              .setColor(new Color([255, 0, 0, 0.5]));
+      symbol = typeof symbol !== "undefined" ? symbol : this.standardSymbol;
 
       return new Promise((resolve, reject) => {
         esriRequest(
