@@ -1,0 +1,17 @@
+{
+  "name": "Bikeshare",
+  "platform": "HTML",
+  "version": "2.12",
+  "wabVersion": "2.12",
+  "author": "Gavin Rehkemper",
+  "description": "Custom Web Appbuilder widget that allows display of GBFS bikeshare locations.",
+  "copyright": "",
+  "license": "http://www.apache.org/licenses/LICENSE-2.0",
+  "properties": {
+    "hasConfig": false,
+    "hasStyle": false,
+    "hasLocale": false,
+    "hasUIFile": false,
+    "hasSettingPage": false
+  }
+}
