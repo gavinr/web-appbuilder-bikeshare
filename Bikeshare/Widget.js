@@ -29,12 +29,14 @@ define([
 ], function(
   declare,
   BaseWidget,
-  GBFS,
 
+  GBFS,
   GraphicsLayer,
+  
   SpatialReference,
   on,
   Search,
+
   Multipoint,
   geometryEngine,
   webMercatorUtils,
